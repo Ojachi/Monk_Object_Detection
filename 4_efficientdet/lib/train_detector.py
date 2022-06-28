@@ -56,11 +56,14 @@ class Detector():
         self.system_dict["params"]["num_workers"] = num_workers;
 
         if(self.system_dict["params"]["use_gpu"]):
-            if torch.cuda.is_available():
-                self.system_dict["local"]["num_gpus"] = torch.cuda.device_count()
-                torch.cuda.manual_seed(123)
-            else:
-                torch.manual_seed(123)
+            
+            self.system_dict["local"]["num_gpus"] = 0
+            #if torch.cuda.is_available():
+            #  self.system_dict["local"]["num_gpus"] = torch.cuda.device_count()
+            #   torch.cuda.manual_seed(123)
+            #else:
+                
+           #     torch.manual_seed(123)
 
         self.system_dict["local"]["training_params"] = {"batch_size": self.system_dict["params"]["batch_size"] * self.system_dict["local"]["num_gpus"],
                                                            "shuffle": True,
