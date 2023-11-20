@@ -9,7 +9,7 @@ from src.model import EfficientDet
 from tensorboardX import SummaryWriter
 import shutil
 import numpy as np
-from tqdm.autonotebook import tqdm
+from tqdm import tqdm
 
 
 class Detector():
@@ -57,19 +57,18 @@ class Detector():
 
         if(self.system_dict["params"]["use_gpu"]):
             
-            self.system_dict["local"]["num_gpus"] = 0
-            #if torch.cuda.is_available():
-            #  self.system_dict["local"]["num_gpus"] = torch.cuda.device_count()
-            #   torch.cuda.manual_seed(123)
-            #else:
+            if torch.cuda.is_available():
+                self.system_dict["local"]["num_gpus"] = torch.cuda.device_count()
+                torch.cuda.manual_seed(123)
+            else:
+                torch.manual_seed(123)
                 
-           #     torch.manual_seed(123)
 
         self.system_dict["local"]["training_params"] = {"batch_size": self.system_dict["params"]["batch_size"] * self.system_dict["local"]["num_gpus"],
-                                                           "shuffle": True,
-                                                           "drop_last": True,
-                                                           "collate_fn": collater,
-                                                           "num_workers": self.system_dict["params"]["num_workers"]}
+                                                            "shuffle": True,
+                                                            "drop_last": True,
+                                                            "collate_fn": collater,
+                                                            "num_workers": self.system_dict["params"]["num_workers"]}
 
         self.system_dict["local"]["training_set"] = CocoDataset(root_dir=self.system_dict["dataset"]["train"]["root_dir"] + "/" + self.system_dict["dataset"]["train"]["coco_dir"],
                                                             img_dir = self.system_dict["dataset"]["train"]["img_dir"],
