@@ -9,7 +9,7 @@ from src.model import EfficientDet
 from tensorboardX import SummaryWriter
 import shutil
 import numpy as np
-from tqdm.autonotebook import tqdm
+from tqdm.notebook import tqdm
 from src.config import colors
 import cv2
 import time as time
@@ -23,10 +23,11 @@ class Infer():
         self.system_dict["local"]["mean"] = np.array([[[0.485, 0.456, 0.406]]])
         self.system_dict["local"]["std"] = np.array([[[0.229, 0.224, 0.225]]])
 
-    def Model(self, model_dir="trained/"):
-        self.system_dict["local"]["model"] = torch.load(model_dir + "/signatrix_efficientdet_coco.pth").module
+    def Model(self):
+        self.system_dict["local"]["model"] = torch.load("D:/Escritorio/Modelo_EfficienDetv2/trained/signatrix_efficientdet_coco.pth").module
         if torch.cuda.is_available():
-            self.system_dict["local"]["model"] = self.system_dict["local"]["model"].cuda();
+            self.system_dict["local"]["model"] = self.system_dict["local"]["model"].cuda()
+            print(self.system_dict["local"]["model"])
 
     def Predict(self, img_path, class_list, vis_threshold = 0.4,output_folder = 'Inference'):
 
@@ -34,9 +35,9 @@ class Infer():
             os.makedirs(output_folder)
         
         image_filename = os.path.basename(img_path)
-        img = cv2.imread(img_path);
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB);
-        image = img.astype(np.float32) / 255.;
+        img = cv2.imread(img_path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        image = img.astype(np.float32) / 255.
         image = (image.astype(np.float32) - self.system_dict["local"]["mean"]) / self.system_dict["local"]["std"]
         height, width, _ = image.shape
         if height > width:
